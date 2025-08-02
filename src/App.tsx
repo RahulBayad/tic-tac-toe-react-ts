@@ -1,13 +1,19 @@
-import { useState } from 'react'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
-import Abc from '@/components/Abc'
+import Index from './pages'
+import NotFound from './pages/NotFound'
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const router = createBrowserRouter([
+    { path: "/", element: <Index /> },
+    { path: "*", element: <NotFound /> },
+  ])
 
   return (
-    <>
-    </>
+    <RouterProvider router={router}>
+
+    </RouterProvider>
   )
 }
 
