@@ -88,13 +88,13 @@ export const OnlineGameBoard = ({ onBackToLanding }: GameBoardProps) => {
     );
   };
 
-  const tl = gsap.timeline()
+  const tl = gsap.timeline({})
   useGSAP(()=>{
-    tl.to(".timer-th1",{width: 24})
-    tl.to(".timer-r",{height: 48})
-    tl.to(".timer-b",{width: 48})
-    tl.to(".timer-l",{height: 48})
-    tl.to(".timer-th2",{width: 24})
+    tl.to(".timer-th1",{width: 24, duration:7.5})
+    tl.to(".timer-r",{height: 48, duration:15})
+    tl.to(".timer-b",{width: 48, duration:15})
+    tl.to(".timer-l",{height: 48, duration:15})
+    tl.to(".timer-th2",{width: 24, duration:7.5})
   },[])
 
   return (
@@ -120,12 +120,12 @@ export const OnlineGameBoard = ({ onBackToLanding }: GameBoardProps) => {
                 <span className="text-nowrap">You (X)</span>
               </div>
 
-              <div className="timer h-12 w-12 border relative">
-                <span className="timer-th1 border-t-3 left-1/2 border-blue-600 absolute h-6 w-0"></span>
-                <span className="timer-r border-r-3 border-blue-600 left-0 absolute h-0 w-0"></span>
-                <span className="timer-b border-b-3 border-blue-600 right-0 absolute h-12 w-0"></span>
-                <span className="timer-l border-l-3 border-blue-600 left-0 bottom-0 absolute h-1 w-0"></span>
-                <span className="timer-th2 border-t-3 border-blue-600 left-0 absolute h-6 w-0"></span>
+              <div className="timer h-12 w-12 border relative overflow-hidden">
+                <span className="timer-th1 border-t-3 left-1/2 top-0 border-blue-600 absolute h-6 w-0"></span>
+                <span className="timer-r border-r-3 border-blue-600 right-0 top-0 absolute h-0 w-0"></span>
+                <span className="timer-b border-b-3 border-blue-600 right-0 bottom-0 absolute h-12 w-0"></span>
+                <span className="timer-l border-l-3 border-blue-600 left-0 bottom-0 absolute h-0 w-0"></span>
+                <span className="timer-th2 border-t-3 border-blue-600 left-0 top-0 absolute h-6 w-0"></span>
               </div>
               <div className="">
                 <span className="text-nowrap">Opponent (O)</span>
