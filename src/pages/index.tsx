@@ -1,4 +1,4 @@
-import { TicTacToe } from "@/components/TicTacToe";
+import { TicTacToe } from "@/components/tic-tac-toe/TicTacToe";
 
 const Index = () => {
   return <TicTacToe />;

@@ -8,9 +8,9 @@ interface LoadingProps {
   onCancel: () => void;
 }
 
-export const Loading = ({ onCancel }: LoadingProps) => {
+export const PassPlayLoading = ({ onCancel }: LoadingProps) => {
   const [progress, setProgress] = useState(0);
-  const [searchText, setSearchText] = useState("Searching for opponents...");
+  const [searchText, setSearchText] = useState("Initializing...");
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -22,9 +22,9 @@ export const Loading = ({ onCancel }: LoadingProps) => {
 
     const textInterval = setInterval(() => {
       setSearchText((prev) => {
-        if (prev === "Searching for opponents...") return "Finding the perfect match...";
-        if (prev === "Finding the perfect match...") return "Almost ready...";
-        return "Searching for opponents...";
+        if (prev === "Initializing...") return "Loading assets...";
+        if (prev === "Loading assets...") return "Almost there...";
+        return "Finalizing...";
       });
     }, 1000);
 
@@ -40,11 +40,8 @@ export const Loading = ({ onCancel }: LoadingProps) => {
         <CardContent className="p-8 space-y-8">
           {/* Header */}
           <div className="text-center space-y-4">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto relative">
-              <Search className="w-8 h-8 text-primary" />
-              <Loader2 className="w-6 h-6 text-primary absolute animate-spin" />
-            </div>
-            <h2 className="text-2xl font-bold">Finding Opponent</h2>
+            
+            <h2 className="text-2xl font-bold">Preparing Match</h2>
             <p className="text-muted-foreground">{searchText}</p>
           </div>
 
@@ -70,7 +67,7 @@ export const Loading = ({ onCancel }: LoadingProps) => {
             onClick={onCancel}
           >
             <X className="w-4 h-4 mr-2" />
-            Cancel Search
+            Cancel
           </Button>
         </CardContent>
       </Card>

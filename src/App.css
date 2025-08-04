@@ -40,3 +40,12 @@
 .read-the-docs {
   color: #888;
 }
+
+@keyframes drawBorder {
+  0% { stroke-dashoffset: 160; }
+  100% { stroke-dashoffset: 0; }
+}
+
+rect {
+  /* animation: drawBorder 2s linear infinite; */
+}
