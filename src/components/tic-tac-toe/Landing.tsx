@@ -2,12 +2,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Play, Users, Trophy } from "lucide-react";
 import type { GameType } from "./TicTacToe";
+import { io } from "socket.io-client";
+import { useSocket } from "@/hooks/useSocket";
+import { useEffect } from "react";
 
 interface LandingProps {
   onStartGame: (gameType:GameType) => void;
 }
 
 export const Landing = ({ onStartGame }: LandingProps) => {
+
+  const socket = useSocket()
+
+  useEffect(()=>{
+
+    console.log("landing", socket)
+    socket?.emit("hello", "Hii! Server, How are you?")
+  },[])
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background to-muted/20">
       <div className="w-full max-w-4xl mx-auto text-center space-y-8">

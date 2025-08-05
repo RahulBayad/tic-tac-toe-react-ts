@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import Index from './pages'
 import NotFound from './pages/NotFound'
+import { SocketProvider } from './contexts/socketContext'
 
 function App() {
 
@@ -11,9 +12,9 @@ function App() {
   ])
 
   return (
-    <RouterProvider router={router}>
-
-    </RouterProvider>
+    <SocketProvider>
+      <RouterProvider router={router} />
+    </SocketProvider>
   )
 }
 

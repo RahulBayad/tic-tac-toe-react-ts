@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,7 @@ type Player = "X" | "O" | null;
 type Board = Player[];
 
 export const OnlineGameBoard = ({ onBackToLanding }: GameBoardProps) => {
+  const [countDown, setCountDown] = useState(60);
   const [board, setBoard] = useState<Board>(Array(9).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
   const [winner, setWinner] = useState<Player>(null);
@@ -97,6 +98,23 @@ export const OnlineGameBoard = ({ onBackToLanding }: GameBoardProps) => {
     tl.to(".timer-th2",{width: 24, duration:7.5})
   },[])
 
+  useEffect(()=>{
+    const timerInterval = setInterval(()=>{
+      setCountDown((prev)=>{
+        if(prev > 0){
+          return prev - 1
+        }
+        clearInterval(timerInterval)
+        return 0
+      })
+      
+    }, 1000)
+
+    return ()=>{
+      clearInterval(timerInterval)
+    }
+  },[])
+
   return (
     <div className="min-h-screen p-4 bg-gradient-to-br from-background to-muted/20">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -120,12 +138,13 @@ export const OnlineGameBoard = ({ onBackToLanding }: GameBoardProps) => {
                 <span className="text-nowrap">You (X)</span>
               </div>
 
-              <div className="timer h-12 w-12 border relative overflow-hidden">
-                <span className="timer-th1 border-t-3 left-1/2 top-0 border-blue-600 absolute h-6 w-0"></span>
-                <span className="timer-r border-r-3 border-blue-600 right-0 top-0 absolute h-0 w-0"></span>
-                <span className="timer-b border-b-3 border-blue-600 right-0 bottom-0 absolute h-12 w-0"></span>
-                <span className="timer-l border-l-3 border-blue-600 left-0 bottom-0 absolute h-0 w-0"></span>
-                <span className="timer-th2 border-t-3 border-blue-600 left-0 top-0 absolute h-6 w-0"></span>
+              <div className="timer h-12 w-12 border rounded-xs relative overflow-hidden flex items-center justify-center">
+                <span className="">{countDown}</span>
+                <span className="timer-th1 border-t-3 left-1/2 top-0 border-green-600 absolute h-6 w-0"></span>
+                <span className="timer-r border-r-3 border-green-600 right-0 top-0 absolute h-0 w-0"></span>
+                <span className="timer-b border-b-3 border-green-600 right-0 bottom-0 absolute h-12 w-0"></span>
+                <span className="timer-l border-l-3 border-green-600 left-0 bottom-0 absolute h-0 w-0"></span>
+                <span className="timer-th2 border-t-3 border-green-600 left-0 top-0 absolute h-6 w-0"></span>
               </div>
               <div className="">
                 <span className="text-nowrap">Opponent (O)</span>
