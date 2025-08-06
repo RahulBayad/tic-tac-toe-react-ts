@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { io, Socket } from "socket.io-client";
 
 type SocketContextType = Socket | null;
@@ -11,34 +18,26 @@ interface SocketProviderProps {
 
 export const SocketProvider = ({ children }: SocketProviderProps) => {
   const [socket, setSocket] = useState<Socket | null>(null);
+  console.log("socket updated", socket)
 
-  useEffect(() => {
-    // Create socket connection only once
-    const connection = io("http://localhost:3000");
-    if (!socket) {
-      
-      
-      setSocket(connection || null)
-      console.log("current", socket)
+    useEffect(() => {
+    const socketInstance = io("http://localhost:3000");
 
-      // Set up event listeners
-      connection?.on("connect", () => {
-        console.log("socket connected");
-      });
+    socketInstance.on("connect", () => {
+      setSocket(socketInstance)
+      console.log("socket connected:", socketInstance.id);
+    });
 
-      connection?.on("disconnect", () => {
-        console.log("socket disconnected");
-      });
-    }
+    socketInstance.on("disconnect", () => {
+      setSocket(null)
+      console.log("socket disconnected");
+    });
 
-    // Cleanup function
     return () => {
-      if (socket) {
-        connection.disconnect();
-        console.log("disonnect")
-      }
+      socketInstance.disconnect();
+      console.log("socket cleanup disconnect");
     };
-  }, []); // Empty dependency array - run only once
+  }, []);
 
   return (
     <SocketContext.Provider value={socket}>
