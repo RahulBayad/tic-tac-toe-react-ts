@@ -11,7 +11,7 @@ interface GameBoardProps {
 type Player = "X" | "O" | null;
 type Board = Player[];
 
-export const PassPlayBoard = ({ onBackToLanding }: GameBoardProps) => {
+export const PassPlayBoard = () => {
   const [board, setBoard] = useState<Board>(Array(9).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
   const [winner, setWinner] = useState<Player>(null);

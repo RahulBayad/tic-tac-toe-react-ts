@@ -1,14 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { X, Loader2, Search } from "lucide-react";
+import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 
-interface LoadingProps {
-  onCancel: () => void;
-}
-
-export const PassPlayLoading = ({ onCancel }: LoadingProps) => {
+export const PassPlayLoading = () => {
   const [progress, setProgress] = useState(0);
   const [searchText, setSearchText] = useState("Initializing...");
 
@@ -64,7 +60,6 @@ export const PassPlayLoading = ({ onCancel }: LoadingProps) => {
           <Button 
             variant="outline" 
             className="w-full"
-            onClick={onCancel}
           >
             <X className="w-4 h-4 mr-2" />
             Cancel

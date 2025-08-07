@@ -5,91 +5,39 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, RotateCcw, User } from "lucide-react";
 import { useGSAP } from '@gsap/react';
 import gsap from "gsap";
+import { useSocket } from "@/hooks/useSocket";
+import { useLocation, type Location } from "react-router-dom";
 
-interface GameBoardProps {
-  onBackToLanding: () => void;
-}
 
 type Player = "X" | "O" | null;
 type Board = Player[];
+type SocketResponse = {
+  roomId: string;
+  gameState: string[];
+  playerTurn: string;
+  currentMove: "X" | "Y";
+  winner: null | string;
+}
 
-export const OnlineGameBoard = ({ onBackToLanding }: GameBoardProps) => {
+export const OnlineGameBoard = () => {
+  const location = useLocation()
+
   const [countDown, setCountDown] = useState(60);
-  const [board, setBoard] = useState<Board>(Array(9).fill(null));
-  const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
-  const [winner, setWinner] = useState<Player>(null);
-  const [isDraw, setIsDraw] = useState(false);
+  const [game, setGame] = useState<SocketResponse>({
+    roomId: location?.state.roomId,
+    currentMove: location?.state.currentMove,
+    gameState: location?.state.gameState,
+    playerTurn: location?.state.playerTurn,
+    winner: location?.state.winner,
+  })
 
-  const winningCombinations = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8], // rows
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8], // columns
-    [0, 4, 8],
-    [2, 4, 6], // diagonals
-  ];
-
-  const checkWinner = (newBoard: Board): Player => {
-    for (const combination of winningCombinations) {
-      const [a, b, c] = combination;
-      if (
-        newBoard[a] &&
-        newBoard[a] === newBoard[b] &&
-        newBoard[a] === newBoard[c]
-      ) {
-        return newBoard[a];
-      }
-    }
-    return null;
-  };
+  const socket = useSocket()
 
   const handleCellClick = (index: number) => {
-    if (board[index] || winner || isDraw) return;
-
-    const newBoard = [...board];
-    newBoard[index] = currentPlayer;
-    setBoard(newBoard);
-
-    const gameWinner = checkWinner(newBoard);
-    if (gameWinner) {
-      setWinner(gameWinner);
-    } else if (newBoard.every((cell) => cell !== null)) {
-      setIsDraw(true);
-    } else {
-      setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
-    }
+    
   };
 
-  const resetGame = () => {
-    setBoard(Array(9).fill(null));
-    setCurrentPlayer("X");
-    setWinner(null);
-    setIsDraw(false);
-  };
-
-  const renderCell = (index: number) => {
-    const cellValue = board[index];
-    return (
-      <button
-        key={index}
-        className="aspect-square bg-card hover:bg-muted/50 border-2 border-border rounded-lg flex items-center justify-center text-4xl font-bold transition-all duration-200 hover:scale-105 disabled:cursor-not-allowed"
-        onClick={() => handleCellClick(index)}
-        disabled={!!cellValue || !!winner || isDraw}
-      >
-        {cellValue && (
-          <span
-            className={cellValue === "X" ? "text-primary" : "text-destructive"}
-          >
-            {cellValue}
-          </span>
-        )}
-      </button>
-    );
-  };
-
-  const tl = gsap.timeline({})
+  const tl = gsap.timeline()
   useGSAP(()=>{
     tl.to(".timer-th1",{width: 24, duration:7.5})
     tl.to(".timer-r",{height: 48, duration:15})
@@ -120,14 +68,14 @@ export const OnlineGameBoard = ({ onBackToLanding }: GameBoardProps) => {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <Button variant="outline" onClick={onBackToLanding}>
+          <Button variant="outline" > 
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Menu
           </Button>
-          <Button variant="outline" onClick={resetGame}>
+          {/* <Button variant="outline" onClick={resetGame}>
             <RotateCcw className="w-4 h-4 mr-2" />
             New Game
-          </Button>
+          </Button> */}
         </div>
 
         <div className=" gap-6">
@@ -156,25 +104,39 @@ export const OnlineGameBoard = ({ onBackToLanding }: GameBoardProps) => {
           <Card className="">
             <CardHeader>
               <CardTitle className="text-center">
-                {winner ? (
+                {/* {winner ? (
                   <span className="text-2xl">🎉 Player {winner} Wins! 🎉</span>
                 ) : isDraw ? (
                   <span className="text-2xl">🤝 It's a Draw! 🤝</span>
                 ) : (
                   <span>Current Turn: Player {currentPlayer}</span>
-                )}
+                )} */}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto">
-                {Array.from({ length: 9 }, (_, index) => renderCell(index))}
+                {Array.from({ length: 9 }, (_, index) => (
+                  <button
+                    key={index}
+                    className="aspect-square bg-card hover:bg-muted/50 border-2 border-border rounded-lg flex items-center justify-center text-4xl font-bold transition-all duration-200 hover:scale-105 disabled:cursor-not-allowed"
+                    onClick={() => handleCellClick(index)}
+                  >
+                    {game?.gameState[index] && (
+                      <span
+                        className={game?.gameState[index] === "X" ? "text-primary" : "text-destructive"}
+                      >
+                        {game?.gameState[index]}
+                      </span>
+                    )}
+                  </button>
+                ))}
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Game Status */}
-        {(winner || isDraw) && (
+        {/* {(winner || isDraw) && (
           <Card className="text-center">
             <CardContent className="p-6">
               <p className="text-lg text-muted-foreground mb-4">
@@ -188,7 +150,7 @@ export const OnlineGameBoard = ({ onBackToLanding }: GameBoardProps) => {
               </Button>
             </CardContent>
           </Card>
-        )}
+        )} */}
       </div>
     </div>
   );

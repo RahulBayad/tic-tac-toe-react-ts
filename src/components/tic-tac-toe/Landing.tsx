@@ -1,22 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Play, Users, Trophy } from "lucide-react";
-import type { GameType } from "./TicTacToe";
-import { useSocket } from "@/hooks/useSocket";
-import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-interface LandingProps {
-  onStartGame: (gameType:GameType) => void;
-}
+export const Landing = () => {
 
-export const Landing = React.memo(({ onStartGame }: LandingProps) => {
-
-  const socket = useSocket()
-  console.log("landing", socket)
-
-  useEffect(()=>{
-    socket?.emit("hello", "Hii! Server, How are you?")
-  },[socket])
+  const navigate = useNavigate()
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background to-muted/20">
@@ -84,15 +73,14 @@ export const Landing = React.memo(({ onStartGame }: LandingProps) => {
           <Button 
             size="lg" 
             className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-            onClick={() => onStartGame("Online")}
+            onClick={()=> navigate("/loading/online")}
           >
-            {/* <Play className="w-5 h-5 mr-2" /> */}
             Find Opponent
           </Button>
           <Button 
             size="lg" 
             className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-            onClick={() => onStartGame("PassAndPlay")}
+            onClick={()=> navigate("/loading/pass-play")}
           >
             Pass & Play
           </Button>
@@ -103,4 +91,4 @@ export const Landing = React.memo(({ onStartGame }: LandingProps) => {
       </div>
     </div>
   );
-})
+}

@@ -1,16 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useSocket } from "@/hooks/useSocket";
 import { X, Loader2, Search } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-interface LoadingProps {
-  onCancel: () => void;
-}
-
-export const OnlineGameLoading = ({ onCancel }: LoadingProps) => {
+export const OnlineGameLoading = () => {
   const [progress, setProgress] = useState(0);
-  const [searchText, setSearchText] = useState("Searching for opponents...");
+  const socket = useSocket()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -20,19 +19,18 @@ export const OnlineGameLoading = ({ onCancel }: LoadingProps) => {
       });
     }, 60);
 
-    const textInterval = setInterval(() => {
-      setSearchText((prev) => {
-        if (prev === "Searching for opponents...") return "Finding the perfect match...";
-        if (prev === "Finding the perfect match...") return "Almost ready...";
-        return "Searching for opponents...";
-      });
-    }, 1000);
+    socket?.emit("findopponent")
+
+    socket?.on("gameCreated",(res)=>{
+      navigate("/play/online", {state : res})
+    })
 
     return () => {
       clearInterval(interval);
-      clearInterval(textInterval);
     };
   }, []);
+
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background to-muted/20">
@@ -45,7 +43,7 @@ export const OnlineGameLoading = ({ onCancel }: LoadingProps) => {
               <Loader2 className="w-6 h-6 text-primary absolute animate-spin" />
             </div>
             <h2 className="text-2xl font-bold">Finding Opponent</h2>
-            <p className="text-muted-foreground">{searchText}</p>
+            <p className="text-muted-foreground">Searching for opponents...</p>
           </div>
 
           {/* Progress */}
@@ -67,7 +65,6 @@ export const OnlineGameLoading = ({ onCancel }: LoadingProps) => {
           <Button 
             variant="outline" 
             className="w-full"
-            onClick={onCancel}
           >
             <X className="w-4 h-4 mr-2" />
             Cancel Search
