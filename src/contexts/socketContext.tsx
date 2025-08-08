@@ -1,16 +1,25 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useCallback, useEffect, useState, type ReactNode } from "react";
 import { io, Socket } from "socket.io-client";
 
-type SocketContextType = Socket | null;
+export type SocketContextType = {
+  socket: Socket | null;
+  setSocket: React.Dispatch<React.SetStateAction<Socket | null>>;
+  disconnectSocket: () => void;
+} | null;
 
-export const SocketContext = createContext<SocketContextType>(null);
+export type SocketResponse = {
+  roomId: string;
+  gameState: string[];
+  playerTurn: string;
+  currentMove: "X" | "Y";
+  winner: null | string;
+};
+
+export const SocketContext = createContext<SocketContextType>({
+  socket: null,
+  setSocket: () => {},
+  disconnectSocket: () => {}
+});
 
 interface SocketProviderProps {
   children: ReactNode;
@@ -18,29 +27,35 @@ interface SocketProviderProps {
 
 export const SocketProvider = ({ children }: SocketProviderProps) => {
   const [socket, setSocket] = useState<Socket | null>(null);
-  console.log("socket updated", socket)
+  
+  const disconnectSocket = useCallback(() => {
+    console.log("disconnect")
+    socket?.disconnect();
+    setSocket(null);
+  },[])
 
-    useEffect(() => {
+  useEffect(() => {
     const socketInstance = io("http://localhost:3000");
 
+    socketInstance?.emit("findopponent");
+
     socketInstance.on("connect", () => {
-      setSocket(socketInstance)
+      setSocket(socketInstance);
       console.log("socket connected:", socketInstance.id);
     });
 
     socketInstance.on("disconnect", () => {
-      setSocket(null)
+      setSocket(null);
       console.log("socket disconnected");
     });
 
     return () => {
       socketInstance.disconnect();
-      console.log("socket cleanup disconnect");
     };
   }, []);
 
   return (
-    <SocketContext.Provider value={socket}>
+    <SocketContext.Provider value={{ socket, setSocket, disconnectSocket }}>
       {children}
     </SocketContext.Provider>
   );

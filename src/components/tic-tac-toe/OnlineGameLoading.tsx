@@ -1,14 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { useSocket } from "@/hooks/useSocket";
 import { X, Loader2, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const OnlineGameLoading = () => {
   const [progress, setProgress] = useState(0);
-  const socket = useSocket()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -18,12 +16,6 @@ export const OnlineGameLoading = () => {
         return prev + 2;
       });
     }, 60);
-
-    socket?.emit("findopponent")
-
-    socket?.on("gameCreated",(res)=>{
-      navigate("/play/online", {state : res})
-    })
 
     return () => {
       clearInterval(interval);
@@ -65,6 +57,7 @@ export const OnlineGameLoading = () => {
           <Button 
             variant="outline" 
             className="w-full"
+            onClick={()=>navigate("/")}
           >
             <X className="w-4 h-4 mr-2" />
             Cancel Search

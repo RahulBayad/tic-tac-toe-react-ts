@@ -73,14 +73,14 @@ export const Landing = () => {
           <Button 
             size="lg" 
             className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-            onClick={()=> navigate("/loading/online")}
+            onClick={()=> navigate("/play/online")}
           >
             Find Opponent
           </Button>
           <Button 
             size="lg" 
             className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-            onClick={()=> navigate("/loading/pass-play")}
+            onClick={()=> navigate("/play/pass-play")}
           >
             Pass & Play
           </Button>
